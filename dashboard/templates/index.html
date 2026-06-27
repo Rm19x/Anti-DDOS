@@ -1,0 +1,253 @@
+<!-- 
+==============================================================================
+Project: anti-ddos (Web Dashboard Frontend UI)
+Author: Mr.Rm19
+GitHub: https://github.com/Rm19x
+Description: Real-time traffic monitoring interface with Dark/Light mode toggle.
+==============================================================================
+-->
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<link rel="stylesheet" href="/static/css/custom.css">
+<script src="/static/js/dashboard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>anti-ddos Dashboard | Control Panel</title>
+    <!-- Tailwind CSS CDN untuk styling modern dan cepat -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Konfigurasi kustom Tailwind untuk mode gelap manual menggunakan class .dark
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <!-- Font Awesome untuk ikon indikator statis/dinamis -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 min-h-screen font-sans transition-colors duration-200">
+
+    <!-- NAVIGATION BAR -->
+    <nav class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex justify-between items-center shadow-sm">
+        <div class="flex items-center space-x-3">
+            <div class="bg-red-500 text-white p-2 rounded-lg animate-pulse">
+                <i class="fa-solid fa-shield-halved text-xl"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">anti-ddos <span class="text-sm font-normal text-gray-500 dark:text-gray-400">v1.0</span></h1>
+                <p class="text-xs text-green-500"><i class="fa-solid fa-circle text-[8px] mr-1"></i> Core Engine Protection Active</p>
+            </div>
+        </div>
+        
+        <!-- CONTROL BUTTONS -->
+        <div class="flex items-center space-x-4">
+            <!-- [Fitur 29] Dark / Light Mode Toggle Button -->
+            <button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition">
+                <i id="theme-icon" class="fa-solid fa-sun"></i>
+            </button>
+            <a href="https://github.com/Rm19x" target="_blank" class="flex items-center space-x-1 text-sm bg-gray-900 text-white dark:bg-white dark:text-gray-900 px-4 py-2 rounded-lg font-medium hover:opacity-90 transition">
+                <i class="fa-brands fa-github text-base"></i>
+                <span>Rm19x</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- MAIN DASHBOARD CONTENT -->
+    <main class="max-w-7xl mx-auto p-6 space-y-6">
+        
+        <!-- STATUS CARDS OVERVIEW -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Card 1: Total Blocked IPs -->
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Active Mitigated IPs</p>
+                    <h3 id="stat-total-blocked" class="text-3xl font-bold mt-1 text-red-500">0</h3>
+                </div>
+                <div class="text-red-500 bg-red-50 dark:bg-red-900/20 p-4 rounded-lg">
+                    <i class="fa-solid fa-user-slash text-2xl"></i>
+                </div>
+            </div>
+
+            <!-- Card 2: System Health Status -->
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">System Health</p>
+                    <h3 id="stat-health" class="text-3xl font-bold mt-1 text-green-500">checking...</h3>
+                </div>
+                <div class="text-green-500 bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+                    <i class="fa-solid fa-heart-pulse text-2xl"></i>
+                </div>
+            </div>
+
+            <!-- Card 3: Cache Integration Server -->
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Memory Engine</p>
+                    <h3 class="text-3xl font-bold mt-1 text-blue-500">REDIS</h3>
+                </div>
+                <div class="text-blue-500 bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                    <i class="fa-solid fa-server text-2xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- [Fitur 22] LIVE ATTACK DATA TABLE CONTAINER -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+            <div class="p-5 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-gavel text-red-500 animate-bounce"></i>
+                    <h2 class="text-lg font-bold">Live Mitigated IP Addresses (Jail List)</h2>
+                </div>
+                <button onclick="fetchAttackData()" class="text-xs bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 px-3 py-1.5 rounded transition">
+                    <i class="fa-solid fa-rotate mr-1"></i> Force Refresh
+                </button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50 dark:bg-gray-700/50 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
+                            <th class="px-6 py-4">IP Address</th>
+                            <th class="px-6 py-4">Violation / Reason</th>
+                            <th class="px-6 py-4">Remaining Jail Time</th>
+                            <th class="px-6 py-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attacker-table-body" class="divide-y divide-gray-200 dark:divide-gray-700 text-sm">
+                        <!-- Data akan di-render otomatis secara asinkron lewat JS -->
+                    </tbody>
+                </table>
+                <!-- Tampilan jika tidak ada serangan aktif -->
+                <div id="no-attacks-msg" class="hidden p-12 text-center text-gray-500 dark:text-gray-400">
+                    <i class="fa-solid fa-shield text-4xl mb-3 text-green-500"></i>
+                    <p class="font-medium text-base">Your server is secure!</p>
+                    <p class="text-xs mt-1">No ongoing malicious behavior or blocked IPs detected in memory cache.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER DEVELOPMENT CREDITS -->
+    <footer class="text-center py-8 text-xs text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 mt-12 bg-white dark:bg-gray-800/50">
+        <p>© 2026 <strong>anti-ddos</strong> Protection Suite. Crafted by <span class="text-red-500 font-semibold">Mr.Rm19</span>.</p>
+        <p class="mt-1">Open-Source Project Repository: <a href="https://github.com/Rm19x" target="_blank" class="text-blue-500 hover:underline">github.com/Rm19x</a></p>
+    </footer>
+
+    <!-- INTERACTIVE JAVASCRIPT LOGIC ENGINE -->
+    <script>
+        // [Fitur 29] Logika Manajemen Tema Dark / Light Mode
+        const htmlElement = document.documentElement;
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                themeIcon.className = "fa-solid fa-moon";
+                localStorage.setItem('theme', 'light');
+            } else {
+                htmlElement.classList.add('dark');
+                themeIcon.className = "fa-solid fa-sun";
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // Sinkronisasi tema awal berdasarkan local storage saat browser dimuat
+        if (localStorage.getItem('theme') === 'light') {
+            htmlElement.classList.remove('dark');
+            themeIcon.className = "fa-solid fa-moon";
+        }
+
+        // Format detik menjadi representasi waktu Menit:Detik yang human-friendly
+        function formatTime(seconds) {
+            if (seconds < 0) return "Permanent / Expired";
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}m ${secs}s`;
+        }
+
+        // [Fitur 22] Mengambil Data Serangan Nyata dari FastAPI Endpoint Secara Berkala
+        async function fetchAttackData() {
+            try {
+                const response = await fetch('/api/v1/attacks');
+                const data = await response.json();
+                
+                document.getElementById('stat-total-blocked').innerText = data.total_blocked;
+                
+                const tbody = document.getElementById('attacker-table-body');
+                const noAttacksMsg = document.getElementById('no-attacks-msg');
+                tbody.innerHTML = '';
+
+                if (data.total_blocked === 0) {
+                    noAttacksMsg.classList.remove('hidden');
+                } else {
+                    noAttacksMsg.classList.add('hidden');
+                    data.attackers.forEach(attacker => {
+                        const tr = document.createElement('tr');
+                        tr.className = "hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition";
+                        tr.innerHTML = `
+                            <td class="px-6 py-4 font-mono font-bold text-red-500 dark:text-red-400">${attacker.ip}</td>
+                            <td class="px-6 py-4"><span class="bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 px-2 py-1 rounded text-xs font-medium">${attacker.reason}</span></td>
+                            <td class="px-6 py-4 font-medium"><i class="fa-regular fa-clock mr-1 text-gray-400"></i> ${formatTime(attacker.remaining_jail_time_sec)}</td>
+                            <td class="px-6 py-4 text-right">
+                                <button onclick="releaseIp('${attacker.ip}')" class="text-xs bg-green-500 hover:bg-green-600 text-white font-semibold px-3 py-1.5 rounded-lg shadow-sm transition">
+                                    <i class="fa-solid fa-unlock mr-1"></i> Unban
+                                </button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            } catch (error) {
+                console.error("[-] Gagal memuat data serangan:", error);
+            }
+        }
+
+        // Fungsi Tombol Aksi untuk Melepas Blokir IP Melalui API Backend
+        async function releaseIp(ip) {
+            if (confirm(`Apakah Anda yakin ingin membebaskan IP ${ip} sekarang?`)) {
+                try {
+                    const response = await fetch(`/api/v1/unban/${ip}`, { method: 'DELETE' });
+                    if (response.ok) {
+                        alert(`IP ${ip} berhasil dilepas dari firewall.`);
+                        fetchAttackData(); // Muat ulang data tabel
+                    } else {
+                        alert("Gagal membebaskan IP target.");
+                    }
+                } catch (error) {
+                    console.error("[-] Error saat melepas IP:", error);
+                }
+            }
+        }
+
+        // Mengecek Kesehatan Server via Health-Check Endpoint secara berkala
+        async function checkServerHealth() {
+            const healthStatus = document.getElementById('stat-health');
+            try {
+                const response = await fetch('/health');
+                if (response.ok) {
+                    healthStatus.innerText = "ONLINE";
+                    healthStatus.className = "text-3xl font-bold mt-1 text-green-500";
+                } else {
+                    healthStatus.innerText = "ERROR";
+                    healthStatus.className = "text-3xl font-bold mt-1 text-yellow-500";
+                }
+            } catch {
+                healthStatus.innerText = "OFFLINE";
+                healthStatus.className = "text-3xl font-bold mt-1 text-red-500";
+            }
+        }
+
+        // Loop Polling Otomatis: Sinkronisasi data setiap 3 detik sekali secara real-time
+        setInterval(() => {
+            fetchAttackData();
+            checkServerHealth();
+        }, 3000);
+
+        // Eksekusi pemuatan data perdana saat window selesai dimuat
+        window.onload = () => {
+            fetchAttackData();
+            checkServerHealth();
+        };
+    </script>
+</body>
+</html>
