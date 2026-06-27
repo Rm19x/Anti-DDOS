@@ -1,0 +1,19 @@
+# ==============================================================================
+# Project: anti-ddos (IP Whitelist Registration Registry)
+# Author: Mr.Rm19
+# GitHub: https://github.com/Rm19x
+# Description: IPs listed here will NEVER be blocked by the firewall.
+# ==============================================================================
+
+# Localhost Loopback Address
+127.0.0.1
+::1
+
+# IPv4 Publik Server / Domain Sahabat (Ganti dengan IP asli servermu)
+192.168.1.1
+
+# IP Administrator / Perangkat Pribadi Mr.Rm19 (Contoh)
+103.111.22.33
+
+# Range IP Googlebot Utama (Opsional untuk SEO Crawler)
+66.249.64.0/19
