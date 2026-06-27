@@ -1,0 +1,32 @@
+/* ==============================================================================
+ * Project: anti-ddos (Custom Dashboard Stylesheet)
+ * Author: Mr.Rm19
+ * GitHub: https://github.com/Rm19x
+ * Description: Production-ready custom UI adjustments and radar animations.
+ * ============================================================================== */
+
+/* Animasi Kustom Efek Denyut Radar untuk Menandai Serangan Baru */
+@keyframes radar-pulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    }
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+    }
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+    }
+}
+
+/* Class Utility untuk dipasang pada IP penyerang yang baru terdeteksi */
+.attack-radar-effect {
+    animation: radar-pulse 2s infinite;
+}
+
+/* Transisi halus saat melakukan toggle Dark/Light Mode */
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
