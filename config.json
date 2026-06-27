@@ -1,0 +1,52 @@
+{
+    "server": {
+        "log_paths": [
+            "/var/log/nginx/access.log",
+            "/var/log/apache2/access.log"
+        ],
+        "reverse_proxy_mode": false,
+        "health_check_port": 8000
+    },
+    "mitigation": {
+        "max_requests_per_minute": 60,
+        "burst_window_seconds": 1,
+        "max_burst_requests": 15,
+        "jail_time_seconds": 3600,
+        "permanent_ban_threshold": 3
+    },
+    "protection_rules": {
+        "geoip_block_countries": ["XX"],
+        "asn_block_list": [12345],
+        "allowed_methods": ["GET", "POST", "HEAD"],
+        "sensitive_uris": ["/login", "/admin", "/api/v1/auth"],
+        "user_agent_blacklist": [
+            "sqlmap",
+            "nikto",
+            "dirbuster",
+            "Hydra"
+        ]
+    },
+    "cloudflare": {
+        "enabled": false,
+        "api_token": "YOUR_CLOUDFLARE_API_TOKEN",
+        "zone_id": "YOUR_CLOUDFLARE_ZONE_ID"
+    },
+    "whitelist": {
+        "ips": ["127.0.0.1", "::1"]
+    },
+    "cache": {
+        "redis_host": "redis_cache",
+        "redis_port": 6379,
+        "redis_db": 0
+    },
+    "alerting": {
+        "email": {
+            "enabled": false,
+            "smtp_server": "smtp.gmail.com",
+            "smtp_port": 587,
+            "sender_email": "your-alerts@domain.com",
+            "receiver_email": "sahabat@domain.com",
+            "smtp_password": "YOUR_SMTP_APP_PASSWORD"
+        }
+    }
+}

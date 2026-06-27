@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # Komponen 1 & 2: Anti-DDoS Analyzer & Firewall Executor
+  anti-ddos-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: anti-ddos-core
+    restart: always
+    network_mode: "host" # Dibutuhkan agar iptables kontainer langsung memanipulasi host
+    cap_add:
+      - NET_ADMIN # Memberikan izin manipulasi network/firewall host
+    volumes:
+      - ./config.json:/app/config.json
+      - ./firewall/whitelist.txt:/app/firewall/whitelist.txt
+      - /var/log:/var/log:ro # Membaca log web server langsung dari host secara Read-Only
+      - ./config.json:/app/config.json
+      - ./firewall/whitelist.txt:/app/firewall/whitelist.txt
+      - /var/log:/var/log:ro
+      - .:/app
+      - ./logs/access.log:/var/log/nginx/access.log
+    depends_on:
+      - redis_cache
+    environment:
+      - TZ=Asia/Jakarta
+
+  # Komponen 5: In-Memory Cache menggunakan Redis
+  redis_cache:
+    image: redis:7-alpine
+    container_name: anti-ddos-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:
+    driver: local
+
