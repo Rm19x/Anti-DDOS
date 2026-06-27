@@ -1,0 +1,21 @@
+# ==============================================================================
+# Project: anti-ddos (Python Dependency Manifest)
+# Author: Mr.Rm19
+# GitHub: https://github.com/Rm19x
+# Description: Production-ready libraries required for the core engine.
+# ==============================================================================
+
+# Driver interaksi berkecepatan tinggi dengan In-Memory Cache Redis[cite: 3]
+redis>=4.5.0
+
+# HTTP Client untuk berkomunikasi dengan API Eksternal (Cloudflare, dll.)[cite: 3]
+requests>=2.31.0
+
+# Library untuk membaca database biner MaxMind (.mmdb) untuk resolusi Negara & ASN[cite: 3]
+geoip2>=4.6.0
+
+# Framework web performa tinggi berbasis ASGI untuk backend dashboard dan health-check[cite: 3]
+fastapi>=0.100.0
+
+# Server ASGI berstandar produksi untuk menjalankan aplikasi FastAPI[cite: 3]
+uvicorn>=0.22.0
