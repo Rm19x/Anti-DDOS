@@ -1,0 +1,22 @@
+{
+    "name": "rm19x/anti-ddos",
+    "description": "Anti-DDOS by Mr.Rm19",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ramdan Maulana",
+            "homepage": "https://github.com/Rm19x"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "ext-redis": "*",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rm19x\\AntiDdos\\": "src/"
+        }
+    }
+}
